@@ -1,0 +1,15 @@
+{% extends "Layouts/base.html"%}
+
+{% block content %}
+
+<h1>Welocme to products page1</h1>
+{% for product in product_list %}
+<h2>{{product.name}}</h2>
+<h2>${{product.price}}</h2>
+<h2>{{product_name}}</h2>
+
+{% empty %}
+<h2> No Product Found </h2>
+{% endfor %}
+
+{% endblock %}
