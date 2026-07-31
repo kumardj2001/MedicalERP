@@ -1,6 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product
-
+from .forms import ProductForm
 # Create your views here.
 def product_view(request):
     product_list = Product.objects.all()
@@ -10,18 +10,31 @@ def product_view(request):
                                                         
     })
 def add_product(request):
-    Product.objects.create(
-        name="ECG Machine",
-        price=50000,
-        descripton="12 Channel ECG",
-        is_active=True
-    )
+    # Product.objects.create(
+    #     name="ECG Machine",
+    #     price=50000,
+    #     descripton="12 Channel ECG",
+    #     is_active=True
+    # )
+    if request.method == "POST":
+        form = ProductForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+    else:
+        form = ProductForm()
+    return render(request, "product_temp/product.html", {'form':form})
 
-    return render(request, "product_temp/product.html")
-def update_product(request):
-    product = Product.objects.get_object_or_404(name='ECG Machine')
-    product.name = "ECG MACHINE"
-    product.save()
+
+def update_product(request, id):
+    product = get_object_or_404(Product, id=id)
+    if request.method =="POST":
+        form = ProductForm(request.POST,request.FILES, instance = product)
+        if form.is_valid():
+            form.save()
+            return redirect("product")
+    else:
+        form = ProductForm(instance=product)
+    return redirect(request, " product_temp/product.html", {"form":form} )
 
     # EVERY TIME WE DO   PRODUCT.SAVE() DJANGO CALLS THE MODEL'S DAVE METHOD
     # AND We CAN CUSTOMIZE THAT METHOD.

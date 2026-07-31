@@ -1,9 +1,17 @@
 from django.db import models
 
 # Create your models here.
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+
+
+    def __str__(self):
+        return self.name
+
+# if we dont use related_name the we have to write like this-> category.product_set.all()
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name = "products")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name = "products", null=True, blank = True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     descripton = models.TextField()
     image = models.ImageField(upload_to="products/")
@@ -16,11 +24,7 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-class Category(models.Model):
-    name = models.CharField(max_length=100)
+    def discounted_price(self):
+        return self.price *0.9
 
-
-    def __str__(self):
-        return self.name
-
-# if we dont use related_name the we have to write like this-> category.product_set.all() 
+ 
